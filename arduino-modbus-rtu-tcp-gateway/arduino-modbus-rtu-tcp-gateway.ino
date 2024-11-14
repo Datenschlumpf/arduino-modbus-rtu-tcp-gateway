@@ -33,7 +33,7 @@ const byte VERSION[] = { 7, 3 };
 #include <Ethernet.h>
 #include <EthernetUdp.h>
 #include <utility/w5100.h>
-#include <CircularBuffer.h>  // CircularBuffer https://github.com/rlogiacco/CircularBuffer
+#include <CircularBuffer.hpp>  // CircularBuffer https://github.com/rlogiacco/CircularBuffer
 #include <EEPROM.h>
 #include <StreamLib.h>  // StreamLib https://github.com/jandrassy/StreamLib
 

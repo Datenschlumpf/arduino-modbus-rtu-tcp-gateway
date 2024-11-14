@@ -123,7 +123,7 @@ void sendSerial() {
 }
 
 void recvSerial() {
-  static uint8_t rxNdx = 0;
+  static uint16_t rxNdx = 0;
   static byte serialIn[MODBUS_SIZE];
   while (mySerial.available() > 0) {
     byte b = mySerial.read();
