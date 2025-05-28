@@ -25,9 +25,12 @@
   v7.2 2023-10-20 Disable DHCP renewal fallback, better advanced_settings.h layout
                   ENABLE_EXTENDED_WEBUI and ENABLE_DHCP is set by default for Mega
   v7.3 2024-01-16 Bugfix Modbus RTU Request form, code comments
+  v7.4 2024-12-16 CSS improvement, code optimization, simplify DHCP renew, better README (solution to ethernet reset issue)
+  v8.0 2025-03-09 Fix 404 error page, code optimization
+  v8.1 2025-03-30 Read away trash coming before slave id
 */
 
-const byte VERSION[] = { 7, 3 };
+const byte VERSION[] = { 8, 1 };
 
 #include <SPI.h>
 #include <Ethernet.h>
@@ -42,12 +45,16 @@ const byte VERSION[] = { 7, 3 };
 #include <avr/wdt.h>
 #include <util/atomic.h>
 
+#include "advanced_settings.h"
+
 typedef struct {
   byte ip[4];
   byte subnet[4];
   byte gateway[4];
+#ifdef ENABLE_DHCP
   byte dns[4];      // only used if ENABLE_DHCP
   bool enableDhcp;  // only used if ENABLE_DHCP
+#endif
   uint16_t tcpPort;
   uint16_t udpPort;
   uint16_t webPort;
@@ -60,14 +67,14 @@ typedef struct {
   byte serialAttempts;
 } config_t;
 
-#include "advanced_settings.h"
-
 const config_t DEFAULT_CONFIG = {
   DEFAULT_STATIC_IP,
   DEFAULT_SUBMASK,
   DEFAULT_GATEWAY,
+#ifdef ENABLE_DHCP
   DEFAULT_DNS,
   DEFAULT_AUTO_IP,
+#endif
   DEFAULT_TCP_PORT,
   DEFAULT_UDP_PORT,
   DEFAULT_WEB_PORT,
@@ -272,6 +279,6 @@ void loop() {
   maintainUptime();  // maintain uptime in case of millis() overflow
 #endif               /* ENABLE_EXTENDED_WEBUI */
 #ifdef ENABLE_DHCP
-  maintainDhcp();
+  Ethernet.maintain();
 #endif /* ENABLE_DHCP */
 }
